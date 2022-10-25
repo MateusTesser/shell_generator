@@ -87,7 +87,7 @@ if __name__ == "__main__":
             print(Bash(args.ip,args.porta).base64())
         elif args.encode == "hex":
             print(Bash(args.ip,args.porta).hexadecimal())
-        else:
+        elif args.encode == "urlencode":
             print(Bash(args.ip,args.porta).urlencode())
     elif args.payload == "python":
         if args.encode is None:
@@ -96,7 +96,7 @@ if __name__ == "__main__":
             print(Python(args.ip,args.porta).base64())
         elif args.encode == "hex":
             print(Python(args.ip,args.porta).hexadecimal())
-        else:
+        elif args.encode == "urlencode":
             print(Python(args.ip,args.porta).urlencode())
     elif args.payload == "powershell":
         if args.encode is None:
@@ -105,7 +105,7 @@ if __name__ == "__main__":
             print(Powershell(args.ip,args.porta).base64())
         elif args.encode == "hex":
             print(Powershell(args.ip,args.porta).hexadecimal())
-        else:
+        elif args.encode == "urlencode":
             print(Powershell(args.ip,args.porta).urlencode())
     elif args.payload == "nc":
         if args.encode is None:
@@ -114,5 +114,5 @@ if __name__ == "__main__":
             print(netcat(args.ip,args.porta).base64())
         elif args.encode == "hex":
             print(netcat(args.ip,args.porta).hexadecimal())
-        else:
+        elif args.encode == "urlencode":
             print(netcat(args.ip,args.porta).urlencode())
