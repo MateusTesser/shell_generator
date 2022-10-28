@@ -145,10 +145,10 @@ if __name__ == "__main__":
             print(Perl(args.ip,args.porta).urlencode())
     elif args.payload == "mkfifo":
         if args.encode is None:
-            print(Perl(args.ip,args.porta).shell())
+            print(Mkfifo(args.ip,args.porta).shell())
         elif args.encode == "base64":
-            print(Perl(args.ip,args.porta).base64())
+            print(Mkfifo(args.ip,args.porta).base64())
         elif args.encode == "hex":
-            print(Perl(args.ip,args.porta).hexadecimal())
+            print(Mkfifo(args.ip,args.porta).hexadecimal())
         elif args.encode == "urlencode":
-            print(Perl(args.ip,args.porta).urlencode())
+            print(Mkfifo(args.ip,args.porta).urlencode())
